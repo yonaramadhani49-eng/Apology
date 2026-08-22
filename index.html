@@ -3,253 +3,426 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>I'm Sorry — Just For You</title>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  
+  <title>For Leila, With Love | From Benny</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-color: #060608;
-      --card-bg: rgba(15, 15, 20, 0.85);
-      --accent-salmon: #f43f5e;
-      --accent-glow: rgba(244, 63, 94, 0.35);
-      --accent-green: #10b981;
-      --text-main: #f8fafc;
-      --text-muted: #a1a1aa;
-      --border-color: rgba(255, 255, 255, 0.08);
+      --bg-dark: #0f051d;
+      --card-bg: rgba(30, 15, 55, 0.7);
+      --primary-purple: #9d4edd;
+      --glow-purple: #c77dff;
+      --accent-pink: #ff70a6;
+      --paper-bg: #fff8f0;
+      --text-dark: #2b1e3a;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
     body {
-      background-color: var(--bg-color);
-      color: var(--text-main);
+      background: radial-gradient(circle at center, #240046 0%, var(--bg-dark) 100%);
+      color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       min-height: 100vh;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      padding: 2rem 1rem;
       overflow-x: hidden;
-      padding: 1.5rem;
+      position: relative;
     }
 
-    #ambient-particles {
+    /* Floating Particles Background */
+    #particles-canvas {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       pointer-events: none;
       z-index: 1;
     }
 
-    .heart-particle {
-      position: absolute;
-      color: rgba(244, 63, 94, 0.3);
-      font-size: 1rem;
-      animation: floatUp 8s linear infinite;
-    }
-
-    @keyframes floatUp {
-      0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
-      50% { opacity: 0.6; }
-      100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
-    }
-
-    .bg-glow {
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(244, 63, 94, 0.15) 0%, rgba(0,0,0,0) 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .container {
-      position: relative;
-      z-index: 2;
-      width: 100%;
-      max-width: 580px;
+    .header {
       text-align: center;
+      z-index: 2;
+      margin-bottom: 2rem;
     }
 
-    .hidden { display: none !important; opacity: 0; }
-
-    .glass-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      backdrop-filter: blur(25px);
-      border-radius: 24px;
-      padding: 2.5rem 1.8rem;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    .header h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 3.5rem;
+      background: linear-gradient(135deg, #e0aaff, var(--accent-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(199, 125, 255, 0.3);
     }
 
-    .subtitle-badge {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      color: var(--accent-salmon);
-      font-weight: 600;
+    .header p {
+      color: #d8b4fe;
+      font-size: 1.1rem;
+      margin-top: 0.5rem;
     }
 
-    .entrance-title {
-      font-size: 1.8rem;
-      margin: 1rem 0;
-      line-height: 1.4;
-    }
-
-    .btn-main, .btn-yes {
-      background: var(--accent-salmon);
-      color: #fff;
-      border: none;
-      padding: 16px 40px;
-      font-size: 1rem;
-      font-weight: 600;
-      border-radius: 40px;
-      cursor: pointer;
-      box-shadow: 0 0 25px var(--accent-glow);
-    }
-
-    .btn-yes { background: var(--accent-green); }
-
-    .btn-group {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    /* Envelopes Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 1.5rem;
-      min-height: 100px;
-      margin-top: 1.5rem;
-      position: relative;
+      width: 100%;
+      max-width: 1100px;
+      z-index: 2;
+      margin-bottom: 3rem;
     }
 
-    .btn-no {
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text-muted);
-      border: 1px solid var(--border-color);
-      padding: 14px 28px;
-      border-radius: 30px;
+    .envelope-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(199, 125, 255, 0.2);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
       cursor: pointer;
-      white-space: nowrap;
+      backdrop-filter: blur(10px);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       position: relative;
-      transition: transform 0.2s ease;
+      overflow: hidden;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     }
 
-    .letter-card { text-align: left; }
-    .letter-header { color: var(--accent-salmon); margin-bottom: 1.5rem; }
-    .letter-body { line-height: 1.8; color: #e2e8f0; font-weight: 300; }
-    .letter-body p { margin-bottom: 1.2rem; }
+    .envelope-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      border-color: var(--glow-purple);
+      box-shadow: 0 12px 40px rgba(157, 78, 221, 0.4);
+    }
 
-    .btn-whatsapp {
+    .envelope-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
+
+    .envelope-card:hover .envelope-icon {
+      transform: scale(1.2) rotate(-5deg);
+    }
+
+    .envelope-card h3 {
+      font-size: 1.1rem;
+      color: #f3e8ff;
+      font-weight: 600;
+    }
+
+    /* Action Toolbar */
+    .action-bar {
+      display: flex;
+      gap: 1.5rem;
+      z-index: 2;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, var(--primary-purple), var(--accent-pink));
+      border: none;
+      color: white;
+      padding: 0.85rem 1.75rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(157, 78, 221, 0.4);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(255, 112, 166, 0.6);
+    }
+
+    .dodging-btn {
+      position: relative;
+      transition: all 0.2s ease-out;
+    }
+
+    /* Letter Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 5, 29, 0.85);
+      backdrop-filter: blur(8px);
       display: flex;
       justify-content: center;
       align-items: center;
-      background: #25d366;
-      color: #fff;
-      text-decoration: none;
-      padding: 16px;
-      border-radius: 30px;
-      font-weight: 600;
-      margin-top: 1.5rem;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .letter-paper {
+      background: var(--paper-bg);
+      color: var(--text-dark);
+      width: 90%;
+      max-width: 550px;
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      position: relative;
+      transform: translateY(30px) scale(0.9);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      background-image: repeating-linear-gradient(var(--paper-bg) 0px, var(--paper-bg) 24px, #e5d5c5 25px);
+      line-height: 25px;
+    }
+
+    .modal-overlay.active .letter-paper {
+      transform: translateY(0) scale(1);
+    }
+
+    .letter-paper h2 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.2rem;
+      color: #5a189a;
+      margin-bottom: 1rem;
+    }
+
+    .letter-content {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      white-space: pre-line;
+    }
+
+    .letter-paper .signature {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.8rem;
+      color: #7b2cbf;
+      text-align: right;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      color: #7b2cbf;
+      cursor: pointer;
+    }
+
+    /* Hug Pulse Visualizer */
+    .hug-overlay {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255,112,166,0.8) 0%, rgba(157,78,221,0) 70%);
+      border-radius: 50%;
+      z-index: 90;
+      pointer-events: none;
+      transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.8s ease;
+      opacity: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 5rem;
+    }
+
+    .hug-overlay.active {
+      transform: translate(-50%, -50%) scale(3);
+      opacity: 1;
     }
   </style>
 </head>
 <body>
 
-  <audio id="bgMusic" loop preload="auto">
-    <source src="https://upload.wikimedia.org/wikipedia/commons/3/34/Sound_Effect_-_Soft_Piano.ogg" type="audio/ogg">
-    <source src="https://codeskulptor-demos.commondatastorage.googleapis.com/Evolucin/g2.mp3" type="audio/mpeg">
-  </audio>
+  <canvas id="particles-canvas"></canvas>
 
-  <div class="bg-glow"></div>
-  <div id="ambient-particles"></div>
-
-  <div class="container">
-
-    <!-- STAGE 1: ENTRANCE -->
-    <div id="entranceScreen" class="glass-card">
-      <span class="subtitle-badge">Just For You</span>
-      <h1 class="entrance-title">I need you to listen to something...</h1>
-      <p style="color: var(--text-muted); margin-bottom: 2rem;">Turn your volume up 🔊</p>
-      <button class="btn-main" onclick="openApology()">PLAY & OPEN PAGE &rarr;</button>
-    </div>
-
-    <!-- STAGE 2: INTERACTIVE -->
-    <div id="interactiveScreen" class="glass-card hidden">
-      <h2>I know I hurt you, and it breaks my heart.<br>Can we fix this together?</h2>
-      <div class="btn-group">
-        <button class="btn-yes" onclick="acceptApology()">YES ❤️</button>
-        <button class="btn-no" id="noBtn" onclick="changeButtonText()" ontouchstart="changeButtonText()">Still Angry 😤</button>
-      </div>
-    </div>
-
-    <!-- STAGE 3: THE LETTER -->
-    <div id="letterScreen" class="glass-card letter-card hidden">
-      <h2 class="letter-header">Thank you for listening... ❤️</h2>
-      <div class="letter-body">
-        <p>I hate the silence between us. Every second that passes without your warmth feels heavy, and knowing that I was the cause of your heartbreak breaks me inside.</p>
-        <p>You aren't just someone I care about; you are my safe place. I let my ego or carelessness get in the way, and I traded your peace for a moment of stupidity. For that, I am truly, deeply sorry.</p>
-        <p>Words on a screen can't undo the damage, but I want to prove to you every single day that your heart is safe with me. I value us far too much to let a mistake pull us apart.</p>
-      </div>
-      <a href="https://wa.me/255624661262?text=I%20read%20your%20letter...%20let's%20talk%20❤️" class="btn-whatsapp">
-        Talk To Me On WhatsApp 💬
-      </a>
-    </div>
-
+  <div class="header">
+    <h1>Open When...</h1>
+    <p>For Leila, with all my love — From Benny 💜</p>
   </div>
 
+  <div class="action-bar">
+    <button class="btn" onclick="triggerVirtualHug()">🤗 Send Virtual Hug</button>
+    <button class="btn dodging-btn" id="loveBtn" onmouseover="dodgeButton()" onclick="dodgeButton()"> Do You Love Me? 💖</button>
+  </div>
+
+  <div class="grid" id="envelopeGrid"></div>
+
+  <!-- Letter Modal -->
+  <div class="modal-overlay" id="letterModal" onclick="closeLetter(event)">
+    <div class="letter-paper" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="closeLetter()">&times;</button>
+      <h2 id="modalTitle">Open When...</h2>
+      <div class="letter-content" id="modalContent"></div>
+      <div class="signature">Forever Yours,<br>Benny</div>
+    </div>
+  </div>
+
+  <!-- Hug Effect Visual -->
+  <div class="hug-overlay" id="hugOverlay">🫂</div>
+
   <script>
-    // Particles
-    for (let i = 0; i < 12; i++) {
-      const heart = document.createElement('div');
-      heart.classList.add('heart-particle');
-      heart.innerHTML = '♥';
-      heart.style.left = Math.random() * 100 + 'vw';
-      heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
-      document.getElementById('ambient-particles').appendChild(heart);
-    }
-
-    function openApology() {
-      const audio = document.getElementById('bgMusic');
-      audio.volume = 0.7;
-      audio.play().catch(err => console.log(err));
-
-      document.getElementById('entranceScreen').classList.add('hidden');
-      document.getElementById('interactiveScreen').classList.remove('hidden');
-    }
-
-    // Direct Text Change Array
-    let index = 0;
-    const messages = [
-      "Are you sure? 🥺",
-      "Think again... 💔",
-      "Don't do this! 😭",
-      "Give me a chance ❤️",
-      "You don't mean it! 🙈",
-      "Pretty please? 🌹",
-      "Forbidden button! 🔒",
-      "Just click YES! 🥰",
-      "Okay, last chance... 🥺"
+    const letters = [
+      { title: "Open when... You miss me 💭", content: "Close your eyes for three seconds. Take a deep breath. Right now, no matter the distance between us, I am thinking about you. You're my favorite thought every single day." },
+      { title: "Open when... You're having a hard day 🌧️", content: "Take a pause, Leila. Whatever went wrong today does not define your peace. I wish I was right there to hold you, but until I can, remember that I am always in your corner." },
+      { title: "Open when... You need a smile 😊", content: "Remember that time we couldn't stop laughing? Just thinking about your real, unedited laugh makes my entire day brighter. Smile for me right now!" },
+      { title: "Open when... You feel stressed 🧘‍♀️", content: "Unclench your jaw. Drop your shoulders away from your ears. Take a deep breath in... and let it out. You are doing amazing, and everything will sort itself out." },
+      { title: "Open when... You can't sleep 🌙", content: "The world is quiet right now. Stop overthinking and rest your eyes. Dream of us, and remember that you are loved beyond measure." },
+      { title: "Open when... You're celebrating something 🎉", content: "YES! I am so proud of you! You worked hard for this, and you deserve every single win. I'm cheering for you louder than anyone else!" },
+      { title: "Open when... You feel insecure 👑", content: "Look in the mirror. You are looking at the most captivating, brilliant, and beautiful person in my world. Don't ever doubt your value." },
+      { title: "Open when... You need motivation 🚀", content: "You have conquered every tough day you've ever faced so far. You are capable, smart, and strong. Go show everyone how it's done!" },
+      { title: "Open when... You just want a hug 🫂", content: "Wrap your arms around yourself and squeeze tight. Consider this a long, warm, non-negotiable hug directly from me to you." },
+      { title: "Open when... You want to know how much I love you ❤️", content: "If I had to choose between breathing and loving you, I would use my last breath to tell you that you are my entire world, Leila." }
     ];
 
-    function changeButtonText() {
-      const btn = document.getElementById('noBtn');
-      btn.innerText = messages[index];
-      index = (index + 1) % messages.length;
-
-      // Moves slightly when clicked
-      const randomX = (Math.random() - 0.5) * 120;
-      const randomY = (Math.random() - 0.5) * 60;
-      btn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+    // Audio Generator (Web Audio API)
+    function playTone(freq, type, duration) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch(e){}
     }
 
-    function acceptApology() {
-      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-      document.getElementById('interactiveScreen').classList.add('hidden');
-      document.getElementById('letterScreen').classList.remove('hidden');
+    // Populate Envelopes
+    const grid = document.getElementById('envelopeGrid');
+    letters.forEach((item, idx) => {
+      const card = document.createElement('div');
+      card.className = 'envelope-card';
+      card.innerHTML = `
+        <div class="envelope-icon">✉️</div>
+        <h3>${item.title}</h3>
+      `;
+      card.onclick = () => openLetter(idx);
+      grid.appendChild(card);
+    });
+
+    function openLetter(idx) {
+      playTone(523.25, 'sine', 0.3); // Soft chime C5
+      document.getElementById('modalTitle').innerText = letters[idx].title;
+      document.getElementById('modalContent').innerText = letters[idx].content;
+      document.getElementById('letterModal').classList.add('active');
     }
+
+    function closeLetter(e) {
+      if (!e || e.target === document.getElementById('letterModal') || e.target.className === 'close-btn') {
+        document.getElementById('letterModal').classList.remove('active');
+      }
+    }
+
+    // Hug Animation
+    function triggerVirtualHug() {
+      playTone(329.63, 'sine', 0.6); // E4
+      const overlay = document.getElementById('hugOverlay');
+      overlay.classList.add('active');
+      
+      // Spawn extra floating hearts
+      for(let i = 0; i < 25; i++) {
+        createHeart();
+      }
+
+      setTimeout(() => {
+        overlay.classList.remove('active');
+      }, 1000);
+    }
+
+    // Dodging Love Button Mechanics
+    const dodgeMessages = [
+      "Wait, catch me first! 😜",
+      "Are you sure? Try again! 💘",
+      "Too slow! 😁",
+      "You know the answer is YES! 💜",
+      "Almost got me! ✨",
+      "Infinite Love Locked! 🔒💖"
+    ];
+    let dodgeIndex = 0;
+
+    function dodgeButton() {
+      playTone(587.33, 'triangle', 0.15); // D5
+      const btn = document.getElementById('loveBtn');
+      const x = (Math.random() - 0.5) * 200;
+      const y = (Math.random() - 0.5) * 100;
+      
+      btn.style.transform = `translate(${x}px, ${y}px)`;
+      btn.innerText = dodgeMessages[dodgeIndex];
+      dodgeIndex = (dodgeIndex + 1) % dodgeMessages.length;
+    }
+
+    // Canvas Background Floating Hearts
+    const canvas = document.getElementById('particles-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class HeartParticle {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = canvas.height + 20;
+        this.size = Math.random() * 12 + 6;
+        this.speedY = Math.random() * 1.5 + 0.5;
+        this.opacity = Math.random() * 0.5 + 0.3;
+        this.color = `hsla(${Math.random() * 40 + 270}, 80%, 75%, ${this.opacity})`;
+      }
+      update() {
+        this.y -= this.speedY;
+        if (this.y < -20) this.reset();
+      }
+      draw() {
+        ctx.fillStyle = this.color;
+        ctx.font = `${this.size}px serif`;
+        ctx.fillText('💜', this.x, this.y);
+      }
+    }
+
+    function createHeart() {
+      particles.push(new HeartParticle());
+    }
+
+    for (let i = 0; i < 30; i++) {
+      particles.push(new HeartParticle());
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
   </script>
 </body>
-    </html>
-        
+      </html>
+      
