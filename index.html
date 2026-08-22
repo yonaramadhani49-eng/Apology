@@ -10,13 +10,13 @@
   
   <style>
     :root {
-      --bg-color: #08080a;
-      --card-bg: rgba(18, 18, 22, 0.75);
+      --bg-color: #060608;
+      --card-bg: rgba(15, 15, 20, 0.82);
       --accent-salmon: #f43f5e;
       --accent-glow: rgba(244, 63, 94, 0.35);
       --accent-green: #10b981;
       --text-main: #f8fafc;
-      --text-muted: #94a3b8;
+      --text-muted: #a1a1aa;
       --border-color: rgba(255, 255, 255, 0.08);
     }
 
@@ -36,6 +36,43 @@
       align-items: center;
       overflow-x: hidden;
       padding: 1.5rem;
+      position: relative;
+    }
+
+    /* Ambient Floating Particle Container */
+    #ambient-particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .heart-particle {
+      position: absolute;
+      color: rgba(244, 63, 94, 0.3);
+      font-size: 1rem;
+      animation: floatUp 8s linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) scale(0.5);
+        opacity: 0;
+      }
+      20% {
+        opacity: 0.6;
+      }
+      80% {
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1.2);
+        opacity: 0;
+      }
     }
 
     /* Background Glow FX */
@@ -44,9 +81,9 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(244, 63, 94, 0.12) 0%, rgba(0,0,0,0) 70%);
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(244, 63, 94, 0.15) 0%, rgba(0,0,0,0) 70%);
       pointer-events: none;
       z-index: 0;
     }
@@ -61,7 +98,7 @@
 
     /* Screen Transitions */
     .screen {
-      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .hidden {
@@ -70,21 +107,25 @@
       transform: translateY(20px);
     }
 
-    /* Entrance Screen */
-    .entrance-card {
+    /* Cards */
+    .glass-card {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      backdrop-filter: blur(20px);
-      padding: 3rem 2rem;
+      backdrop-filter: blur(25px);
       border-radius: 24px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    }
+
+    /* Stage 1: Entrance */
+    .entrance-card {
+      padding: 3.5rem 2rem;
     }
 
     .subtitle-badge {
       display: inline-block;
       font-size: 0.75rem;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
       color: var(--accent-salmon);
       margin-bottom: 1.2rem;
       font-weight: 600;
@@ -104,7 +145,6 @@
       margin-bottom: 2.2rem;
     }
 
-    /* Primary Interactive Buttons */
     .btn-main {
       background: var(--accent-salmon);
       color: #fff;
@@ -124,14 +164,9 @@
       box-shadow: 0 0 35px rgba(244, 63, 94, 0.55);
     }
 
-    /* Interactive Forgiveness Stage */
+    /* Stage 2: Interactive */
     .interactive-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      backdrop-filter: blur(20px);
-      padding: 2.5rem 1.8rem;
-      border-radius: 24px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      padding: 3rem 1.8rem;
       position: relative;
     }
 
@@ -184,58 +219,74 @@
       white-space: nowrap;
     }
 
-    /* Final Catharsis Letter Screen */
+    /* Stage 3: The Living Letter */
     .letter-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      backdrop-filter: blur(20px);
-      padding: 2.5rem 2rem;
-      border-radius: 24px;
+      padding: 3rem 2.2rem;
       text-align: left;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-      animation: fadeIn 0.8s ease forwards;
+      animation: fadeIn 1s ease forwards;
     }
 
     .letter-header {
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       color: var(--accent-salmon);
       font-weight: 500;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .letter-body {
-      font-size: 1rem;
-      line-height: 1.8;
+      font-size: 1.02rem;
+      line-height: 1.9;
       color: #e2e8f0;
       margin-bottom: 2rem;
+      font-weight: 300;
     }
 
     .letter-body p {
-      margin-bottom: 1.2rem;
+      margin-bottom: 1.4rem;
+      opacity: 0;
+      animation: textReveal 0.8s ease forwards;
     }
 
-    /* Photo Memory Section */
+    .letter-body p:nth-child(1) { animation-delay: 0.3s; }
+    .letter-body p:nth-child(2) { animation-delay: 1.2s; }
+    .letter-body p:nth-child(3) { animation-delay: 2.1s; }
+    .letter-body p:nth-child(4) { animation-delay: 3.0s; }
+
+    @keyframes textReveal {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .highlight-text {
+      color: var(--accent-salmon);
+      font-weight: 500;
+    }
+
+    /* Gallery */
     .photo-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin: 1.8rem 0;
+      gap: 12px;
+      margin: 2rem 0;
     }
 
     .photo-item {
       width: 100%;
-      height: 110px;
+      height: 120px;
       object-fit: cover;
-      border-radius: 12px;
+      border-radius: 14px;
       border: 1px solid var(--border-color);
-      transition: transform 0.3s ease;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .photo-item:hover {
-      transform: scale(1.05);
+      transform: scale(1.06);
     }
 
-    /* WhatsApp Bridge Button */
+    /* WhatsApp Button */
     .btn-whatsapp {
       display: flex;
       align-items: center;
@@ -249,39 +300,46 @@
       border-radius: 30px;
       font-weight: 600;
       font-size: 1rem;
-      box-shadow: 0 0 20px rgba(37, 211, 102, 0.3);
+      box-shadow: 0 0 25px rgba(37, 211, 102, 0.35);
       transition: all 0.3s ease;
-      margin-top: 1rem;
+      margin-top: 1.5rem;
     }
 
     .btn-whatsapp:hover {
       transform: translateY(-2px);
-      box-shadow: 0 0 30px rgba(37, 211, 102, 0.5);
+      box-shadow: 0 0 35px rgba(37, 211, 102, 0.55);
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(15px); }
+      from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
 
+  <!-- Ambient Audio Engine -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=sorry-acoustic-guitar-113250.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Ambient Background FX -->
   <div class="bg-glow"></div>
+  <div id="ambient-particles"></div>
 
   <div class="container">
 
-    <!-- STAGE 1: ENTRANCE THRESHOLD -->
-    <div id="entranceScreen" class="screen entrance-card">
+    <!-- STAGE 1: ENTRANCE -->
+    <div id="entranceScreen" class="screen glass-card entrance-card">
       <span class="subtitle-badge">Just For You</span>
-      <h1 class="entrance-title">I need you to see something...</h1>
-      <p class="entrance-desc">Please give me 60 seconds of your time.</p>
+      <h1 class="entrance-title">I need you to listen to something...</h1>
+      <p class="entrance-desc">Put on your earphones for a better experience.</p>
       <button class="btn-main" onclick="openApology()">OPEN PAGE &rarr;</button>
     </div>
 
-    <!-- STAGE 2: EVASIVE FORGIVENESS -->
-    <div id="interactiveScreen" class="screen interactive-card hidden">
-      <h2 class="question-title">I know I messed up and I am truly sorry.<br>Can we start fresh?</h2>
+    <!-- STAGE 2: INTERACTIVE FORGIVENESS -->
+    <div id="interactiveScreen" class="screen glass-card interactive-card hidden">
+      <h2 class="question-title">I know I hurt you, and it breaks my heart.<br>Can we fix this together?</h2>
       
       <div class="btn-group" id="btnGroup">
         <button class="btn-yes" onclick="acceptApology()">YES ❤️</button>
@@ -289,28 +347,32 @@
       </div>
     </div>
 
-    <!-- STAGE 3: CATHARSIS & LETTER REVEAL -->
-    <div id="letterScreen" class="screen letter-card hidden">
-      <h2 class="letter-header">Thank you for listening... ❤️</h2>
+    <!-- STAGE 3: THE LIVING LETTER -->
+    <div id="letterScreen" class="screen glass-card letter-card hidden">
+      <h2 class="letter-header">
+        <span>Thank you for staying...</span> ❤️
+      </h2>
       
       <div class="letter-body">
-        <p>I hate that I upset you. I have spent the last few days overthinking everything and wishing I had handled things better.</p>
+        <p>I hate the silence between us. Every second that passes without your warmth feels heavy, and knowing that I was the cause of your heartbreak breaks me inside.</p>
         
-        <p>What we have is far too precious to lose over an avoidable mistake. Your peace of mind and happiness mean everything to me.</p>
+        <p>You aren't just someone I care about; <span class="highlight-text">you are my safe place</span>. I let my ego or carelessness get in the way, and I traded your peace for a moment of stupidity. For that, I am truly, deeply sorry.</p>
         
-        <!-- Memory Gallery (Replace src with real photo links if available) -->
+        <p>Words on a screen can't undo the damage, but I want to prove to you every single day that your heart is safe with me. I value us far too much to let a mistake pull us apart.</p>
+
+        <!-- Memory Photos -->
         <div class="photo-grid">
           <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=400&q=80" alt="Memory 1" class="photo-item">
           <img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=400&q=80" alt="Memory 2" class="photo-item">
           <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=400&q=80" alt="Memory 3" class="photo-item">
         </div>
 
-        <p>I promise to listen better, respect your feelings, and keep learning how to treat you properly every day.</p>
+        <p>Whenever you are ready, I am here. No pressure, no rush—just me, waiting to make things right.</p>
       </div>
 
-      <!-- STAGE 4: WHATSAPP CONVERSION BRIDGE -->
-      <!-- Replace 255000000000 with your target WhatsApp number in international format -->
-      <a href="https://wa.me/255000000000?text=I%20saw%20the%20page...%20let's%20talk%20❤️" class="btn-whatsapp">
+      <!-- STAGE 4: WHATSAPP DIRECT LINK -->
+      <!-- Replace 255000000000 with your exact WhatsApp phone number -->
+      <a href="https://wa.me/255000000000?text=I%20listened%20to%20the%20music%20and%20read%20your%20letter...%20let's%20talk%20❤️" class="btn-whatsapp">
         Talk To Me On WhatsApp 💬
       </a>
     </div>
@@ -318,57 +380,31 @@
   </div>
 
   <script>
-    /* NATIVE WEB AUDIO SYNTHESIZER (No external audio files needed) */
-    let audioCtx = null;
-
-    function getAudioContext() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-      return audioCtx;
-    }
-
-    function playClickSound(freq = 587.33, type = 'sine', duration = 0.12) {
-      try {
-        const ctx = getAudioContext();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(freq * 1.4, ctx.currentTime + duration);
-
-        gain.gain.setValueAtTime(0.12, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
-
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-
-        osc.start();
-        osc.stop(ctx.currentTime + duration);
-      } catch (e) {
-        console.log("Audio FX initialised on interaction");
+    /* AMBIENT FLOATING HEARTS GENERATOR */
+    function createHearts() {
+      const container = document.getElementById('ambient-particles');
+      for (let i = 0; i < 15; i++) {
+        const heart = document.createElement('div');
+        heart.classList.add('heart-particle');
+        heart.innerHTML = '♥';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+        heart.style.animationDelay = (Math.random() * 5) + 's';
+        container.appendChild(heart);
       }
     }
+    createHearts();
 
-    function playSuccessChime() {
-      try {
-        const ctx = getAudioContext();
-        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
-        notes.forEach((freq, idx) => {
-          setTimeout(() => {
-            playClickSound(freq, 'triangle', 0.25);
-          }, idx * 70);
-        });
-      } catch (e) {}
+    /* MUSIC ENGINE */
+    function playMusic() {
+      const audio = document.getElementById('bgMusic');
+      audio.volume = 0.5;
+      audio.play().catch(e => console.log("Audio autoplay restricted until user gesture"));
     }
 
     /* SCREEN FLOW CONTROLLERS */
     function openApology() {
-      playClickSound(440);
+      playMusic();
       document.getElementById('entranceScreen').classList.add('hidden');
       document.getElementById('interactiveScreen').classList.remove('hidden');
     }
@@ -377,20 +413,17 @@
     let dodgeIndex = 0;
     const dodgeLabels = [
       "Still Angry 😤",
-      "Nice try! 😜",
-      "Wrong button! ❤️",
+      "Please no... 🥺",
+      "Give me a chance ❤️",
       "Forbidden! 🔒",
-      "Click YES! ✨"
+      "Press YES ✨"
     ];
 
     function dodgeButton() {
-      playClickSound(280, 'sawtooth', 0.08);
       const noBtn = document.getElementById('noBtn');
-      
       dodgeIndex++;
       noBtn.textContent = dodgeLabels[dodgeIndex % dodgeLabels.length];
 
-      // Calculate safe displacement vectors within view area
       const randomX = (Math.random() - 0.5) * 220;
       const randomY = (Math.random() - 0.5) * 120;
 
@@ -399,26 +432,23 @@
 
     /* SUCCESS REVEAL & CONFETTI */
     function acceptApology() {
-      playSuccessChime();
-
-      // Trigger high-end confetti explosion
       confetti({
-        particleCount: 100,
-        spread: 70,
+        particleCount: 120,
+        spread: 80,
         origin: { y: 0.6 }
       });
 
       setTimeout(() => {
         confetti({
-          particleCount: 50,
+          particleCount: 60,
           angle: 60,
-          spread: 55,
+          spread: 60,
           origin: { x: 0 }
         });
         confetti({
-          particleCount: 50,
+          particleCount: 60,
           angle: 120,
-          spread: 55,
+          spread: 60,
           origin: { x: 1 }
         });
       }, 250);
