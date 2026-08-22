@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>I'm Sorry — Just For You</title>
+  
+  <!-- Canvas Confetti Library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  
+  <style>
+    :root {
+      --bg-color: #08080a;
+      --card-bg: rgba(18, 18, 22, 0.75);
+      --accent-salmon: #f43f5e;
+      --accent-glow: rgba(244, 63, 94, 0.35);
+      --accent-green: #10b981;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+      padding: 1.5rem;
+    }
+
+    /* Background Glow FX */
+    .bg-glow {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(244, 63, 94, 0.12) 0%, rgba(0,0,0,0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 580px;
+      text-align: center;
+    }
+
+    /* Screen Transitions */
+    .screen {
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .hidden {
+      display: none !important;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    /* Entrance Screen */
+    .entrance-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      backdrop-filter: blur(20px);
+      padding: 3rem 2rem;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .subtitle-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent-salmon);
+      margin-bottom: 1.2rem;
+      font-weight: 600;
+    }
+
+    .entrance-title {
+      font-size: 1.8rem;
+      font-weight: 500;
+      line-height: 1.4;
+      color: var(--text-main);
+      margin-bottom: 0.8rem;
+    }
+
+    .entrance-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 2.2rem;
+    }
+
+    /* Primary Interactive Buttons */
+    .btn-main {
+      background: var(--accent-salmon);
+      color: #fff;
+      border: none;
+      padding: 16px 40px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 40px;
+      cursor: pointer;
+      box-shadow: 0 0 25px var(--accent-glow);
+      transition: all 0.3s ease;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-main:hover {
+      transform: scale(1.04);
+      box-shadow: 0 0 35px rgba(244, 63, 94, 0.55);
+    }
+
+    /* Interactive Forgiveness Stage */
+    .interactive-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      backdrop-filter: blur(20px);
+      padding: 2.5rem 1.8rem;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+
+    .question-title {
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-bottom: 2rem;
+      line-height: 1.4;
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      min-height: 80px;
+      position: relative;
+    }
+
+    .btn-yes {
+      background: var(--accent-green);
+      color: #fff;
+      border: none;
+      padding: 14px 36px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+
+    .btn-yes:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+    }
+
+    .btn-no {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+      padding: 14px 28px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: transform 0.15s ease-out, background 0.2s ease;
+      position: relative;
+      white-space: nowrap;
+    }
+
+    /* Final Catharsis Letter Screen */
+    .letter-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      backdrop-filter: blur(20px);
+      padding: 2.5rem 2rem;
+      border-radius: 24px;
+      text-align: left;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    .letter-header {
+      font-size: 1.4rem;
+      color: var(--accent-salmon);
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+    }
+
+    .letter-body {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: #e2e8f0;
+      margin-bottom: 2rem;
+    }
+
+    .letter-body p {
+      margin-bottom: 1.2rem;
+    }
+
+    /* Photo Memory Section */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 1.8rem 0;
+    }
+
+    .photo-item {
+      width: 100%;
+      height: 110px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      transition: transform 0.3s ease;
+    }
+
+    .photo-item:hover {
+      transform: scale(1.05);
+    }
+
+    /* WhatsApp Bridge Button */
+    .btn-whatsapp {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      background: #25d366;
+      color: #fff;
+      text-decoration: none;
+      padding: 16px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 1rem;
+      box-shadow: 0 0 20px rgba(37, 211, 102, 0.3);
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    .btn-whatsapp:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(37, 211, 102, 0.5);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-glow"></div>
+
+  <div class="container">
+
+    <!-- STAGE 1: ENTRANCE THRESHOLD -->
+    <div id="entranceScreen" class="screen entrance-card">
+      <span class="subtitle-badge">Just For You</span>
+      <h1 class="entrance-title">I need you to see something...</h1>
+      <p class="entrance-desc">Please give me 60 seconds of your time.</p>
+      <button class="btn-main" onclick="openApology()">OPEN PAGE &rarr;</button>
+    </div>
+
+    <!-- STAGE 2: EVASIVE FORGIVENESS -->
+    <div id="interactiveScreen" class="screen interactive-card hidden">
+      <h2 class="question-title">I know I messed up and I am truly sorry.<br>Can we start fresh?</h2>
+      
+      <div class="btn-group" id="btnGroup">
+        <button class="btn-yes" onclick="acceptApology()">YES ❤️</button>
+        <button class="btn-no" id="noBtn" onmouseover="dodgeButton()" onclick="dodgeButton()">Still Angry 😤</button>
+      </div>
+    </div>
+
+    <!-- STAGE 3: CATHARSIS & LETTER REVEAL -->
+    <div id="letterScreen" class="screen letter-card hidden">
+      <h2 class="letter-header">Thank you for listening... ❤️</h2>
+      
+      <div class="letter-body">
+        <p>I hate that I upset you. I have spent the last few days overthinking everything and wishing I had handled things better.</p>
+        
+        <p>What we have is far too precious to lose over an avoidable mistake. Your peace of mind and happiness mean everything to me.</p>
+        
+        <!-- Memory Gallery (Replace src with real photo links if available) -->
+        <div class="photo-grid">
+          <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=400&q=80" alt="Memory 1" class="photo-item">
+          <img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=400&q=80" alt="Memory 2" class="photo-item">
+          <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=400&q=80" alt="Memory 3" class="photo-item">
+        </div>
+
+        <p>I promise to listen better, respect your feelings, and keep learning how to treat you properly every day.</p>
+      </div>
+
+      <!-- STAGE 4: WHATSAPP CONVERSION BRIDGE -->
+      <!-- Replace 255000000000 with your target WhatsApp number in international format -->
+      <a href="https://wa.me/255000000000?text=I%20saw%20the%20page...%20let's%20talk%20❤️" class="btn-whatsapp">
+        Talk To Me On WhatsApp 💬
+      </a>
+    </div>
+
+  </div>
+
+  <script>
+    /* NATIVE WEB AUDIO SYNTHESIZER (No external audio files needed) */
+    let audioCtx = null;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playClickSound(freq = 587.33, type = 'sine', duration = 0.12) {
+      try {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(freq * 1.4, ctx.currentTime + duration);
+
+        gain.gain.setValueAtTime(0.12, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch (e) {
+        console.log("Audio FX initialised on interaction");
+      }
+    }
+
+    function playSuccessChime() {
+      try {
+        const ctx = getAudioContext();
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+        notes.forEach((freq, idx) => {
+          setTimeout(() => {
+            playClickSound(freq, 'triangle', 0.25);
+          }, idx * 70);
+        });
+      } catch (e) {}
+    }
+
+    /* SCREEN FLOW CONTROLLERS */
+    function openApology() {
+      playClickSound(440);
+      document.getElementById('entranceScreen').classList.add('hidden');
+      document.getElementById('interactiveScreen').classList.remove('hidden');
+    }
+
+    /* EVASIVE "NO" BUTTON PHYSICS */
+    let dodgeIndex = 0;
+    const dodgeLabels = [
+      "Still Angry 😤",
+      "Nice try! 😜",
+      "Wrong button! ❤️",
+      "Forbidden! 🔒",
+      "Click YES! ✨"
+    ];
+
+    function dodgeButton() {
+      playClickSound(280, 'sawtooth', 0.08);
+      const noBtn = document.getElementById('noBtn');
+      
+      dodgeIndex++;
+      noBtn.textContent = dodgeLabels[dodgeIndex % dodgeLabels.length];
+
+      // Calculate safe displacement vectors within view area
+      const randomX = (Math.random() - 0.5) * 220;
+      const randomY = (Math.random() - 0.5) * 120;
+
+      noBtn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+    }
+
+    /* SUCCESS REVEAL & CONFETTI */
+    function acceptApology() {
+      playSuccessChime();
+
+      // Trigger high-end confetti explosion
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+
+      setTimeout(() => {
+        confetti({
+          particleCount: 50,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 }
+        });
+        confetti({
+          particleCount: 50,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 }
+        });
+      }, 250);
+
+      document.getElementById('interactiveScreen').classList.add('hidden');
+      document.getElementById('letterScreen').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
