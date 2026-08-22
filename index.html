@@ -119,8 +119,9 @@
     .btn-group {
       display: flex;
       justify-content: center;
+      align-items: center;
       gap: 1.5rem;
-      min-height: 80px;
+      min-height: 120px;
       margin-top: 1.5rem;
       position: relative;
     }
@@ -133,7 +134,9 @@
       border-radius: 30px;
       cursor: pointer;
       white-space: nowrap;
-      transition: all 0.2s ease;
+      transition: transform 0.15s ease, background-color 0.2s ease;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .letter-card { text-align: left; }
@@ -181,7 +184,7 @@
       <h2>I know I hurt you, and it breaks my heart.<br>Can we fix this together?</h2>
       <div class="btn-group">
         <button class="btn-yes" onclick="acceptApology()">YES ❤️</button>
-        <button class="btn-no" id="noBtn" onmouseover="dodgeButton()" onclick="dodgeButton()">Still Angry 😤</button>
+        <button class="btn-no" id="noBtn">Still Angry 😤</button>
       </div>
     </div>
 
@@ -212,15 +215,10 @@
       document.getElementById('ambient-particles').appendChild(heart);
     }
 
-    // Force Play Audio on First Click
     function openApology() {
       const audio = document.getElementById('bgMusic');
       audio.volume = 0.7;
-      audio.play().then(() => {
-        console.log("Music started successfully");
-      }).catch(err => {
-        console.log("Playback error: ", err);
-      });
+      audio.play().catch(err => console.log(err));
 
       document.getElementById('entranceScreen').classList.add('hidden');
       document.getElementById('interactiveScreen').classList.remove('hidden');
@@ -240,12 +238,23 @@
       "Okay, last chance... 🥺"
     ];
 
-    function dodgeButton() {
-      const noBtn = document.getElementById('noBtn');
+    const noBtn = document.getElementById('noBtn');
+
+    function handleNoInteraction(e) {
+      if (e) e.preventDefault();
+      
       dodgeIndex = (dodgeIndex + 1) % dodgeLabels.length;
       noBtn.textContent = dodgeLabels[dodgeIndex];
-      noBtn.style.transform = `translate(${(Math.random() - 0.5) * 200}px, ${(Math.random() - 0.5) * 100}px)`;
+      
+      const x = (Math.random() - 0.5) * 160;
+      const y = (Math.random() - 0.5) * 80;
+      noBtn.style.transform = `translate(${x}px, ${y}px)`;
     }
+
+    // Direct event listeners for mobile touch & desktop click/hover
+    noBtn.addEventListener('touchstart', handleNoInteraction, { passive: false });
+    noBtn.addEventListener('click', handleNoInteraction);
+    noBtn.addEventListener('mouseover', handleNoInteraction);
 
     function acceptApology() {
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
@@ -254,5 +263,4 @@
     }
   </script>
 </body>
-  </html>
-  
+</html>
