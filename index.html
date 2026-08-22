@@ -122,6 +122,7 @@
       gap: 1.5rem;
       min-height: 80px;
       margin-top: 1.5rem;
+      position: relative;
     }
 
     .btn-no {
@@ -132,6 +133,7 @@
       border-radius: 30px;
       cursor: pointer;
       white-space: nowrap;
+      transition: all 0.2s ease;
     }
 
     .letter-card { text-align: left; }
@@ -191,7 +193,8 @@
         <p>You aren't just someone I care about; you are my safe place. I let my ego or carelessness get in the way, and I traded your peace for a moment of stupidity. For that, I am truly, deeply sorry.</p>
         <p>Words on a screen can't undo the damage, but I want to prove to you every single day that your heart is safe with me. I value us far too much to let a mistake pull us apart.</p>
       </div>
-      <a href="https://wa.me/255624661262?text=I%20read%20your%20letter...%20let's%20talk%20❤️" class="btn-whatsapp">
+      <!-- BADILISHA NAMBA HAPA CHINI -->
+      <a href="https://wa.me/255000000000?text=I%20read%20your%20letter...%20let's%20talk%20❤️" class="btn-whatsapp">
         Talk To Me On WhatsApp 💬
       </a>
     </div>
@@ -224,12 +227,23 @@
     }
 
     let dodgeIndex = 0;
-    const dodgeLabels = ["Still Angry 😤", "Please no... 🥺", "Give me a chance ❤️", "Forbidden! 🔒"];
+    const dodgeLabels = [
+      "Still Angry 😤",
+      "Are you sure? 🥺",
+      "Think again... 💔",
+      "Don't do this! 😭",
+      "Give me a chance ❤️",
+      "You don't mean it! 🙈",
+      "Pretty please? 🌹",
+      "Forbidden button! 🔒",
+      "Just click YES already! 🥰",
+      "Okay, last chance... 🥺"
+    ];
 
     function dodgeButton() {
       const noBtn = document.getElementById('noBtn');
-      dodgeIndex++;
-      noBtn.textContent = dodgeLabels[dodgeIndex % dodgeLabels.length];
+      dodgeIndex = (dodgeIndex + 1) % dodgeLabels.length;
+      noBtn.textContent = dodgeLabels[dodgeIndex];
       noBtn.style.transform = `translate(${(Math.random() - 0.5) * 200}px, ${(Math.random() - 0.5) * 100}px)`;
     }
 
@@ -240,5 +254,5 @@
     }
   </script>
 </body>
-        </html>
-        
+  </html>
+  
